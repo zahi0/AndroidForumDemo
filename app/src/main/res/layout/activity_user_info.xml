@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/fl">
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar2"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        app:title=" ">
+        <TextView
+            android:textColor="#fff"
+            android:textSize="20sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="用户信息"
+            android:layout_gravity="center"
+            android:id="@+id/toolbar_title" />
+        </android.support.v7.widget.Toolbar>
+    </FrameLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:layout_below="@+id/fl">
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/icon_edit"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/nav_icon"/>
+    <Button
+        android:id="@+id/iconedit"
+        android:onClick="ImageEdit"
+        android:text="修改头像"
+        android:textColor="#FF0AAE51"
+        android:background="@android:color/transparent"
+        android:layout_centerInParent="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/icon_edit"/>
+<RelativeLayout
+    android:id="@+id/ll"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:layout_below="@+id/iconedit"
+    android:layout_alignParentLeft="true"
+    android:layout_alignParentStart="true">
+    <TextView
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:textColor="#FF0AAE51"
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:text="用户名:"
+        android:id="@+id/textView2" />
+    <TextView
+        android:textColor="#FF0AAE51"
+        android:id="@+id/username1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/textView2" />
+    <Button
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:id="@+id/nameEdit"
+        android:text="修改"
+        android:textColor="#FF0AAE51"
+        android:onClick="nameEdit"
+        android:background="@android:color/transparent"
+        android:layout_width="40dp"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/username1" />
+</RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/ll1"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="35dp"
+        android:layout_below="@+id/ll"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
+        <TextView
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:textColor="#FF0AAE51"
+            android:layout_width="70dp"
+            android:layout_height="wrap_content"
+            android:text="个性签名:"
+            android:id="@+id/textView" />
+
+        <TextView
+            android:id="@+id/personal_signature1"
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:ellipsize="marquee"
+            android:focusableInTouchMode="true"
+            android:lines="5"
+            android:marqueeRepeatLimit="marquee_forever"
+            android:textColor="#FF0AAE51"
+            android:layout_toStartOf="@+id/personal_signatureEdit"
+            android:layout_toLeftOf="@+id/personal_signatureEdit"
+            android:layout_toRightOf="@+id/textView"
+            android:layout_toEndOf="@+id/textView" />
+        <Button
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:id="@+id/personal_signatureEdit"
+            android:text="修改"
+            android:textColor="#FF0AAE51"
+            android:onClick="PSEdit"
+            android:background="@android:color/transparent"
+            android:layout_width="40dp"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/textView" />
+    </RelativeLayout>
+    <Button
+        android:layout_centerInParent="true"
+        android:onClick="logout"
+        android:background="@android:color/transparent"
+        android:textColor="#FF0AAE51"
+        android:text="退出当前账户"
+        android:layout_below="@+id/ll1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    </RelativeLayout>
+</RelativeLayout>

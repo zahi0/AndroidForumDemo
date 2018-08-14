@@ -59,14 +59,14 @@ public class MainActivity extends AppCompatActivity {
 
     private DrawerLayout mDrawerlayout;
     private PopupWindow mPopWindow;
-    String un, pw;
-    boolean islogin=false;
-    CircleImageView head_icon;
+    String userName, password;
+    boolean isLogin=false;
+    CircleImageView headIcon;
     NavigationView navView;
-    private List<PostList> pl;
+    private List<PostList> postList;
     MyAdapter adapter ;
     RecyclerView recyclerView;
-    int rank;
+//    int rank;
     private SwipeRefreshLayout swipeRefresh;
 
     @Override
@@ -104,13 +104,13 @@ public class MainActivity extends AppCompatActivity {
                 return  true;
             }
         });
-        pl=new ArrayList<>();
+        postList=new ArrayList<>();
         initPostList();
         recyclerView=(RecyclerView)findViewById(R.id.recycler_view);
         GridLayoutManager layoutManager=new GridLayoutManager(this,1);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        adapter=new MyAdapter(pl);
+        adapter=new MyAdapter(postList);
         recyclerView.setAdapter(adapter);
         swipeRefresh=(SwipeRefreshLayout)findViewById(R.id.swip_refresh) ;
         swipeRefresh.setColorSchemeResources(R.color.colorPrimary);
@@ -160,8 +160,8 @@ public class MainActivity extends AppCompatActivity {
                 .build();
         ImageLoader.getInstance().init(config); //初始化
 
-        islogin=getdata();
-        if (islogin) {
+        isLogin=getdata();
+        if (isLogin) {
             MyUser myUser = BmobUser.getCurrentUser(MyUser.class);
             if (myUser!=null){
                 String imageUrl;
@@ -178,9 +178,9 @@ public class MainActivity extends AppCompatActivity {
         adapter.setOnItemClickListener(new OnRecyclerViewItemClickListener() {
             @Override
             public void onItemClick(View view, final int position) {
-               PostList postList=pl.get(position);
+               PostList mPostList=postList.get(position);
                 Intent intent=new Intent(MainActivity.this,PostInfo.class);
-                intent.putExtra("objectid",postList.getBOID());
+                intent.putExtra("objectid",mPostList.getBOID());
                 startActivity(intent);
             }
         });
@@ -192,20 +192,20 @@ public class MainActivity extends AppCompatActivity {
                 final AlertDialog.Builder builder=new AlertDialog.Builder(MainActivity.this);
                 builder.setTitle("删除本帖").setNegativeButton("取消", null).setPositiveButton("确定", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        if(islogin){
-                            PostList postList=pl.get(position);
+                        if(isLogin){
+                            PostList mPostList=postList.get(position);
                             MyUser thisuser=BmobUser.getCurrentUser(MyUser.class);
                             getrank(thisuser.getUsername(),true);
-                            getrank(postList.getPublisher(),false);
-                            boolean isMaster=isMaster(thisuser.getUsername(),postList.getPublisher());
+                            getrank(mPostList.getPublisher(),false);
+                            boolean isMaster=isMaster(thisuser.getUsername(),mPostList.getPublisher());
                             if (getrankcompare()||isMaster){
                                 PostList p=new PostList();
-                                final String id=postList.getBOID();
+                                final String id=mPostList.getBOID();
                                 p.delete(id,new UpdateListener() {
                                     @Override
                                     public void done(BmobException e) {
                                         if (e==null) {Toast.makeText(MainActivity.this,"deleted",Toast.LENGTH_SHORT).show();
-                                            pl.remove(position);
+                                            postList.remove(position);
                                             adapter.notifyItemRemoved(position);
                                             deleteReply(id);}
                                         else {
@@ -267,7 +267,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                un = inputusername.getText().toString();
+                userName = inputusername.getText().toString();
             }
 
             @Override
@@ -283,7 +283,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                pw = inputpassword.getText().toString();
+                password = inputpassword.getText().toString();
             }
 
             @Override
@@ -295,8 +295,8 @@ public class MainActivity extends AppCompatActivity {
 
     public void login(View v) {
         final MyUser user =new MyUser();
-        user.setUsername(un);
-        user.setPassword(pw);
+        user.setUsername(userName);
+        user.setPassword(password);
         user.login(new SaveListener<BmobUser>() {
             @Override
             public void done(BmobUser bmobUser, BmobException e) {
@@ -304,7 +304,7 @@ public class MainActivity extends AppCompatActivity {
                     mPopWindow.dismiss();
                     Toast.makeText(MainActivity.this,"登录成功",Toast.LENGTH_SHORT).show();
                     BmobQuery<MyUser> query = new BmobQuery<MyUser>();
-                    query.addWhereEqualTo("username",un);
+                    query.addWhereEqualTo("username",userName);
                     query.findObjects(new FindListener<MyUser>() {
                         @Override
                         public void done(List<MyUser> list, BmobException e) {
@@ -312,16 +312,16 @@ public class MainActivity extends AppCompatActivity {
                                 String a,imageUrl;
                                 a=list.get(0).getPersonal_signature();
                                 if (list.get(0).getImage()==null) {imageUrl="drawable://" + R.drawable.nav_icon;
-                                    initview(un, a, imageUrl);
-                                }else initview(un,a,list.get(0).getImage().getFileUrl());
+                                    initview(userName, a, imageUrl);
+                                }else initview(userName,a,list.get(0).getImage().getFileUrl());
                             }else {Toast.makeText(MainActivity.this,"query fail"+e.getMessage(),Toast.LENGTH_SHORT).show();
                                 e.printStackTrace();
-                                initview(un,null,null);
+                                initview(userName,null,null);
                             }
                         }
                     });
-                    islogin=true;
-                    savedate(islogin);
+                    isLogin=true;
+                    savedate(isLogin);
                 }else {
                     Toast.makeText(MainActivity.this,"登陆失败",Toast.LENGTH_SHORT).show();
                     e.printStackTrace();
@@ -332,8 +332,8 @@ public class MainActivity extends AppCompatActivity {
 
     public void sign(View v){
         MyUser newUser = new MyUser();
-        newUser.setUsername(un);
-        newUser.setPassword(pw);
+        newUser.setUsername(userName);
+        newUser.setPassword(password);
         newUser.setRank(1);
         newUser.signUp(new SaveListener<BmobUser>() {
             @Override
@@ -350,15 +350,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void userinfo(View v){   //头像点击事件
-        islogin=getdata();
-        if (islogin){
+        isLogin=getdata();
+        if (isLogin){
             Intent intent=new Intent(this,UserInfo.class);
             startActivity(intent);
         }else popup();
     }
 
     public void fab(View v){     //悬浮按钮点击事件
-        if (islogin){
+        if (isLogin){
             Intent intent=new Intent(this,PostEdit.class);
             startActivity(intent);
         }
@@ -413,12 +413,12 @@ public class MainActivity extends AppCompatActivity {
         username.setText(uname);
         TextView personal_signature= (TextView) headerView.findViewById(R.id.personal_signature);
         personal_signature.setText(ps);
-        head_icon = (CircleImageView)headerView.findViewById(R.id.icon_image);
-        ImageLoader.getInstance().displayImage(url,head_icon);
+        headIcon = (CircleImageView)headerView.findViewById(R.id.icon_image);
+        ImageLoader.getInstance().displayImage(url,headIcon);
     }
 
     public void initPostList(){
-        pl.clear();
+        postList.clear();
         BmobQuery<PostList> query = new BmobQuery<PostList>();
         query.setLimit(50);
         query.findObjects(new FindListener<PostList>() {
@@ -426,17 +426,17 @@ public class MainActivity extends AppCompatActivity {
             public void done(final List<PostList> list, BmobException e) {
                 if (e==null){
                     for (int i=0;i<list.size();i++){
-                         final PostList postList=new PostList();
-                        postList.setTitle(list.get(i).getTitle());
-                        postList.setTime( list.get(i).getCreatedAt());
-                        postList.setPublisher(list.get(i).getPublisher());
-                        postList.setContent(list.get(i).getContent());
-                        postList.setBOID(list.get(i).getObjectId());
-                        postList.setPid(list.get(i).getPid());
+                         final PostList mPostList=new PostList();
+                        mPostList.setTitle(list.get(i).getTitle());
+                        mPostList.setTime( list.get(i).getCreatedAt());
+                        mPostList.setPublisher(list.get(i).getPublisher());
+                        mPostList.setContent(list.get(i).getContent());
+                        mPostList.setBOID(list.get(i).getObjectId());
+                        mPostList.setPid(list.get(i).getPid());
                         //获取头像url
-                        if (list.get(i).getHead()==null) postList.setHead("drawable://" + R.drawable.nav_icon);
-                        else postList.setHead(list.get(i).getHead());
-                        pl.add(postList);
+                        if (list.get(i).getHead()==null) mPostList.setHead("drawable://" + R.drawable.nav_icon);
+                        else mPostList.setHead(list.get(i).getHead());
+                        postList.add(mPostList);
                     }
                     adapter.notifyDataSetChanged();
                 }else {
@@ -508,15 +508,15 @@ public class MainActivity extends AppCompatActivity {
         return  pref.getInt("rank",0);
     }
 
-    public void savedate(boolean islogin){      //save login state
+    public void savedate(boolean isLogin){      //save login state
         SharedPreferences.Editor editor=getSharedPreferences("data",MODE_PRIVATE).edit();
-        editor.putBoolean("islogin",islogin);
+        editor.putBoolean("isLogin",isLogin);
         editor.apply();
     }
 
     public boolean getdata(){     //get login state
         SharedPreferences pref=getSharedPreferences("data",MODE_PRIVATE);
-        return  pref.getBoolean("islogin",false);
+        return  pref.getBoolean("isLogin",false);
     }
 
     public void saverankcompare(boolean b){      //save rank compare result

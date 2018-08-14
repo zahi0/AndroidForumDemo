@@ -18,12 +18,10 @@ import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-/**
- * Created by kirito on 2017/5/1.
- */
-
 public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.ViewHolder>  {
+
     private List<ReplyList> mPDB;
+
     public class ViewHolder extends RecyclerView.ViewHolder {
         CardView cardView;
         TextView replyer,timeinreply,reply,floor,title;
@@ -81,6 +79,7 @@ public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.ViewHolder> 
             }
         });        */
     }
+
     @Override
     public int getItemCount() {
         return mPDB.size();

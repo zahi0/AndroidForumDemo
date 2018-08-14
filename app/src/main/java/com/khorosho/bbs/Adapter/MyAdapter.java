@@ -19,21 +19,22 @@ import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-/**
- * Created by kirito on 2017/4/30.
- */
-
 public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
 
     public MainActivity.OnRecyclerViewItemClickListener mOnItemClickListener = null;//点击
+
     public MainActivity.OnRecyclerViewLongItemClickListener mOnLongItemClickListener = null;//长按
+
     public void setOnItemClickListener(MainActivity.OnRecyclerViewItemClickListener listener) {
         this.mOnItemClickListener = listener;
     }
+
     public void setOnLongItemClickListener(MainActivity.OnRecyclerViewLongItemClickListener listener) {
         this.mOnLongItemClickListener = listener;
     }
+
     private List<PostList> mPostList;
+
     public class ViewHolder extends RecyclerView.ViewHolder {
         CardView cardView;
         TextView publisher,time,title,content;
@@ -111,6 +112,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
         });
         */
     }
+
     @Override
     public int getItemCount() {
         return mPostList.size();

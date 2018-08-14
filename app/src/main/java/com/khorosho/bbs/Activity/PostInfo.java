@@ -32,6 +32,7 @@ import cn.bmob.v3.listener.SaveListener;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class PostInfo extends AppCompatActivity {
+
     CircleImageView reply_head;
     private List<ReplyList> pdb;
     ReplyAdapter adapter ;

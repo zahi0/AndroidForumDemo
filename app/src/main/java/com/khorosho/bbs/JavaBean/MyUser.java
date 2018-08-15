@@ -7,14 +7,14 @@ import cn.bmob.v3.listener.UpdateListener;
 public class MyUser extends BmobUser {
 
     private int rank;   //权限等级
-    private String personal_signature;  //个性签名
+    private String slogan;  //个性签名
     private BmobFile image;//头像
 
-    public void setPersonal_signature(String personal_signature){
-        this.personal_signature=personal_signature;}
+    public void setSlogan(String slogan){
+        this.slogan = slogan;}
 
-    public String getPersonal_signature() {
-        return personal_signature;
+    public String getSlogan() {
+        return slogan;
     }
 
     public void setImage(BmobFile image) {

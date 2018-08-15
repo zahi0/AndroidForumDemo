@@ -44,8 +44,8 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class UserInfo extends AppCompatActivity {
 
-    TextView un,ps;
-    CircleImageView icon_edit;
+    TextView userName, slogan;
+    CircleImageView iconEdit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,14 +58,14 @@ public class UserInfo extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setHomeAsUpIndicator(R.drawable.ic_back);
         }
-        ps=(TextView)findViewById(R.id.personal_signature1);
-        un=(TextView)findViewById(R.id.username1);
-        icon_edit = (CircleImageView)findViewById(R.id.icon_edit);
+        slogan=(TextView)findViewById(R.id.personal_signature1);
+        userName=(TextView)findViewById(R.id.username1);
+        iconEdit = (CircleImageView)findViewById(R.id.icon_edit);
         MyUser myUser=BmobUser.getCurrentUser(MyUser.class);
         if (myUser!=null){
           //  Toast.makeText(UserInfo.this,"rank is "+myUser.getRank(),Toast.LENGTH_SHORT).show();
-         un.setText(myUser.getUsername());
-         ps.setText(myUser.getPersonal_signature());
+         userName.setText(myUser.getUsername());
+         slogan.setText(myUser.getSlogan());
             //创建默认的ImageLoader配置参数
             ImageLoaderConfiguration configuration = ImageLoaderConfiguration
                     .createDefault(this);
@@ -79,7 +79,7 @@ public class UserInfo extends AppCompatActivity {
                     @Override
                     public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
                         super.onLoadingComplete(imageUri, view, loadedImage);
-                        icon_edit.setImageBitmap(loadedImage);
+                        iconEdit.setImageBitmap(loadedImage);
                     }
                 });
             }
@@ -120,7 +120,7 @@ public class UserInfo extends AppCompatActivity {
             ContentResolver cr = this.getContentResolver();
             try {
                 Bitmap bitmap = BitmapFactory.decodeStream(cr.openInputStream(uri));
-                icon_edit.setImageBitmap(bitmap);
+                iconEdit.setImageBitmap(bitmap);
                  final MyUser currentUser= BmobUser.getCurrentUser(MyUser.class);
                 File file=new File(path);
 //                final String a=file.getName();
@@ -192,13 +192,13 @@ public class UserInfo extends AppCompatActivity {
         builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                BmobUser userEdit=BmobUser.getCurrentUser();
+                final BmobUser userEdit=BmobUser.getCurrentUser();
                 userEdit.setUsername(input.getText().toString());
                 userEdit.update(new UpdateListener() {
                     @Override
                     public void done(BmobException e) {
                         if (e == null) {
-                            un.setText(input.getText().toString());
+                            userName.setText(input.getText().toString());
                             Toast.makeText(UserInfo.this,"修改成功",Toast.LENGTH_SHORT).show();
                             saveBoolean(true);
                         } else {
@@ -231,12 +231,12 @@ public class UserInfo extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 MyUser userEdit = BmobUser.getCurrentUser(MyUser.class);
-                userEdit.setPersonal_signature(inputText.getText().toString());
+                userEdit.setSlogan(inputText.getText().toString());
                 userEdit.update(new UpdateListener() {
                     @Override
                     public void done(BmobException e) {
                         if (e == null) {
-                            ps.setText(inputText.getText().toString());
+                            slogan.setText(inputText.getText().toString());
                             Toast.makeText(UserInfo.this,"修改成功",Toast.LENGTH_SHORT).show();
                             saveBoolean(true);
                         } else {

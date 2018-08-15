@@ -4,8 +4,14 @@ import cn.bmob.v3.BmobObject;
 import cn.bmob.v3.datatype.BmobFile;
 
 public class ReplyList extends BmobObject {
-
-    private  String reply,replyer,belongto,timeinreply,floor,title,head;//内容，发布者，所属贴子ID,时间，楼层，标题（只在一楼显示），头像
+    //回复内容，回复者，所属贴子ID,时间，楼层，标题（只在一楼显示），头像
+    private  String reply;//,replyer,belongto,timeinreply,floor,title,head;
+    private  String replyer;
+    private  String belongTo;
+    private  String timeInReply;
+    private  String floor;
+    private  String title;
+    private  String head;
 
     public void setReply(String reply){
         this.reply=reply;
@@ -23,12 +29,12 @@ public class ReplyList extends BmobObject {
         return replyer;
     }
 
-    public void setBelongto(String belongto){
-        this.belongto=belongto;
+    public void setBelongTo(String belongTo){
+        this.belongTo=belongTo;
     }
 
     public String getBelongto(){
-        return belongto;
+        return belongTo;
     }
 
     public void setFloor(String floor){
@@ -39,9 +45,9 @@ public class ReplyList extends BmobObject {
         return floor;
     }
 
-    public void setTimeinreply(String timeinreply){this.timeinreply=timeinreply;}
+    public void setTimeInReply(String timeInReply){this.timeInReply=timeInReply;}
 
-    public String getTimeinreply(){return timeinreply;}
+    public String getTimeInReply(){return timeInReply;}
 
     public void setTitle(String title){
         this.title=title;

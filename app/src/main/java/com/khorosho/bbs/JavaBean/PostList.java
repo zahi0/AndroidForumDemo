@@ -4,8 +4,14 @@ import cn.bmob.v3.BmobObject;
 import cn.bmob.v3.datatype.BmobFile;
 
 public class PostList extends BmobObject {
-
-    private String title,content,publisher,time,BOID,url,pid,head; //标题，内容，发布者,时间,postlist的objectID,头像url，发布者id，发布者头像
+    //标题，内容，发布者,时间,postlist的objectID,发布者id，发布者头像
+    private String title;
+    private String content;
+    private String publisher;
+    private String time;
+    private String objectID;
+    private String publisherID;
+    private String head;
 
     public void setTitle(String title){
         this.title=title;
@@ -39,17 +45,17 @@ public class PostList extends BmobObject {
         return time;
     }
 
-    public void setUrl(String url){this.url=url;}
+//    public void setUrl(String url){this.url=url;}
+//
+//    public String getUrl(){return url;}
 
-    public String getUrl(){return url;}
+    public void setObjectID(String objectID){this.objectID=objectID;}
 
-    public void setBOID(String BOID){this.BOID=BOID;}
+    public String getObjectID(){return objectID;}
 
-    public String getBOID(){return BOID;}
+    public void setPublisherID(String id){this.publisherID=id;}
 
-    public void setPid(String id){this.pid=id;}
-
-    public String getPid(){return pid;}
+    public String getPublisherID(){return publisherID;}
 
     public void setHead(String head){this.head=head;}
 

@@ -20,27 +20,27 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.ViewHolder>  {
 
-    private List<ReplyList> mPDB;
+    private List<ReplyList> replyList;
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         CardView cardView;
-        TextView replyer,timeinreply,reply,floor,title;
-        CircleImageView reply_head;
+        TextView replyer,timeInReply,reply,floor,title;
+        CircleImageView replyHead;
 
         public ViewHolder(View view) {
             super(view);
             cardView = (CardView) view;
             replyer = (TextView) view.findViewById(R.id.replyer);
-            timeinreply=(TextView)view.findViewById(R.id.timeinreply);
-            reply=(TextView)view.findViewById(R.id.reply);
-            floor=(TextView)view.findViewById(R.id.floor);
-            reply_head=(CircleImageView)view.findViewById(R.id.reply_head);
-            title=(TextView)view.findViewById(R.id.titleinreply);
+            timeInReply = (TextView)view.findViewById(R.id.timeinreply);
+            reply = (TextView)view.findViewById(R.id.reply);
+            floor = (TextView)view.findViewById(R.id.floor);
+            replyHead = (CircleImageView)view.findViewById(R.id.reply_head);
+            title = (TextView)view.findViewById(R.id.titleinreply);
         }
     }
 
     public ReplyAdapter(List<ReplyList> replyLists) {
-        mPDB = replyLists;
+        replyList = replyLists;
     }
 
     @Override
@@ -52,9 +52,9 @@ public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.ViewHolder> 
 
     @Override
     public void onBindViewHolder(final ReplyAdapter.ViewHolder holder, int position) {
-        ReplyList pdb = mPDB.get(position);
+        ReplyList pdb = replyList.get(position);
         holder.replyer.setText(pdb.getReplyer());
-        holder.timeinreply.setText(pdb.getTimeinreply());
+        holder.timeInReply.setText(pdb.getTimeInReply());
         holder.floor.setText(pdb.getFloor());
         holder.reply.setText(pdb.getReply());
         if (position==0) {holder.title.setVisibility(View.VISIBLE);
@@ -65,7 +65,7 @@ public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.ViewHolder> 
                 .bitmapConfig(Bitmap.Config.RGB_565)
                 .imageScaleType(ImageScaleType.IN_SAMPLE_INT)
                 .build();
-        ImageLoader.getInstance().displayImage(pdb.getHead(),holder.reply_head,options);
+        ImageLoader.getInstance().displayImage(pdb.getHead(),holder.replyHead,options);
 /*
         BmobQuery<MyUser> query = new BmobQuery<MyUser>();
         query.addWhereEqualTo("username",pdb.getReplyer());
@@ -82,7 +82,7 @@ public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.ViewHolder> 
 
     @Override
     public int getItemCount() {
-        return mPDB.size();
+        return replyList.size();
     }
 
 }

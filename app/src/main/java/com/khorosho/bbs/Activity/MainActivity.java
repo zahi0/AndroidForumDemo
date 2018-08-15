@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
     private DrawerLayout mDrawerlayout;
     private PopupWindow mPopWindow;
     String userName, password;
-    boolean isLogin=false;
+    boolean isLogin = false;
     CircleImageView headIcon;
     NavigationView navView;
     private List<PostList> postList;
@@ -140,8 +140,7 @@ public class MainActivity extends AppCompatActivity {
         DisplayImageOptions options = new DisplayImageOptions.Builder()
                 .cacheInMemory(true).cacheOnDisk(true)
                 .imageScaleType(ImageScaleType.IN_SAMPLE_INT)
-                .bitmapConfig(Bitmap.Config.RGB_565)// 防止内存溢出的，图片太多就这这个。还有其他设置
-               //如Bitmap.Config.ARGB_8888
+                .bitmapConfig(Bitmap.Config.RGB_565)// 防止内存溢出的，图片太多就这个。还有其他设置，如Bitmap.Config.ARGB_8888
               //  .showImageOnLoading(R.drawable.ic_launcher)   //默认图片
               //  .showImageForEmptyUri(R.drawable.kedou)    //url爲空會显示该图片，自己放在drawable里面的
              //   .showImageOnFail(R.drawable.k2k2k2k)// 加载失败显示的图片
@@ -160,7 +159,7 @@ public class MainActivity extends AppCompatActivity {
                 .build();
         ImageLoader.getInstance().init(config); //初始化
 
-        isLogin=getdata();
+        isLogin=getData();
         if (isLogin) {
             MyUser myUser = BmobUser.getCurrentUser(MyUser.class);
             if (myUser!=null){
@@ -170,17 +169,18 @@ public class MainActivity extends AppCompatActivity {
                 }else {
                    imageUrl=myUser.getImage().getFileUrl();
                     }
-                initview(myUser.getUsername(),myUser.getPersonal_signature(),imageUrl);
+                initView(myUser.getUsername(),myUser.getSlogan(),imageUrl);
                 Toast.makeText(MainActivity.this,"自动登陆成功",Toast.LENGTH_SHORT).show();
             }
         }
+
         //item的点击事件
         adapter.setOnItemClickListener(new OnRecyclerViewItemClickListener() {
             @Override
             public void onItemClick(View view, final int position) {
                PostList mPostList=postList.get(position);
                 Intent intent=new Intent(MainActivity.this,PostInfo.class);
-                intent.putExtra("objectid",mPostList.getBOID());
+                intent.putExtra("objectid",mPostList.getObjectID());
                 startActivity(intent);
             }
         });
@@ -194,14 +194,14 @@ public class MainActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         if(isLogin){
                             PostList mPostList=postList.get(position);
-                            MyUser thisuser=BmobUser.getCurrentUser(MyUser.class);
-                            getrank(thisuser.getUsername(),true);
-                            getrank(mPostList.getPublisher(),false);
-                            boolean isMaster=isMaster(thisuser.getUsername(),mPostList.getPublisher());
-                            if (getrankcompare()||isMaster){
-                                PostList p=new PostList();
-                                final String id=mPostList.getBOID();
-                                p.delete(id,new UpdateListener() {
+                            MyUser myUser=BmobUser.getCurrentUser(MyUser.class);
+                            getRank(myUser.getUsername(),true);
+                            getRank(mPostList.getPublisher(),false);
+                            boolean isMaster=isMaster(myUser.getUsername(),mPostList.getPublisher());
+                            if (getRankCompare()||isMaster){
+                                PostList list=new PostList();
+                                final String id=mPostList.getObjectID();
+                                list.delete(id,new UpdateListener() {
                                     @Override
                                     public void done(BmobException e) {
                                         if (e==null) {Toast.makeText(MainActivity.this,"deleted",Toast.LENGTH_SHORT).show();
@@ -254,12 +254,12 @@ public class MainActivity extends AppCompatActivity {
                 800, ViewGroup.LayoutParams.WRAP_CONTENT, true);
         mPopWindow.setContentView(contentView);
         mPopWindow.setFocusable(true);
-        final EditText inputusername=(EditText)contentView.findViewById(R.id.account) ;
-        final EditText inputpassword=(EditText)contentView.findViewById(R.id.password) ;
-        View rootview = LayoutInflater.from(MainActivity.this).inflate(R.layout.activity_main, null);
-        mPopWindow.showAtLocation(rootview, Gravity.CENTER, 0, 0);
+        final EditText inputUserName=(EditText)contentView.findViewById(R.id.account) ;
+        final EditText inputPassword=(EditText)contentView.findViewById(R.id.password) ;
+        View rootView = LayoutInflater.from(MainActivity.this).inflate(R.layout.activity_main, null);
+        mPopWindow.showAtLocation(rootView, Gravity.CENTER, 0, 0);
         mDrawerlayout.closeDrawers();
-        inputusername.addTextChangedListener(new TextWatcher() {
+        inputUserName.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -267,7 +267,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                userName = inputusername.getText().toString();
+                userName = inputUserName.getText().toString();
             }
 
             @Override
@@ -275,7 +275,7 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-        inputpassword.addTextChangedListener(new TextWatcher() {
+        inputPassword.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -283,7 +283,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                password = inputpassword.getText().toString();
+                password = inputPassword.getText().toString();
             }
 
             @Override
@@ -309,19 +309,19 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void done(List<MyUser> list, BmobException e) {
                             if (e==null){
-                                String a,imageUrl;
-                                a=list.get(0).getPersonal_signature();
+                                String slogan,imageUrl;
+                                slogan=list.get(0).getSlogan();
                                 if (list.get(0).getImage()==null) {imageUrl="drawable://" + R.drawable.nav_icon;
-                                    initview(userName, a, imageUrl);
-                                }else initview(userName,a,list.get(0).getImage().getFileUrl());
+                                    initView(userName, slogan, imageUrl);
+                                }else initView(userName,slogan,list.get(0).getImage().getFileUrl());
                             }else {Toast.makeText(MainActivity.this,"query fail"+e.getMessage(),Toast.LENGTH_SHORT).show();
                                 e.printStackTrace();
-                                initview(userName,null,null);
+                                initView(userName,null,null);
                             }
                         }
                     });
                     isLogin=true;
-                    savedate(isLogin);
+                    saveData(isLogin);
                 }else {
                     Toast.makeText(MainActivity.this,"登陆失败",Toast.LENGTH_SHORT).show();
                     e.printStackTrace();
@@ -349,8 +349,8 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    public void userinfo(View v){   //头像点击事件
-        isLogin=getdata();
+    public void userInfo(View v){   //头像点击事件
+        isLogin=getData();
         if (isLogin){
             Intent intent=new Intent(this,UserInfo.class);
             startActivity(intent);
@@ -375,13 +375,13 @@ public class MainActivity extends AppCompatActivity {
     protected void onRestart() {
         super.onRestart();
         initPostList();
-        if (!getdata()) {
+        if (!getData()) {
             String imageUrl = "drawable://" + R.drawable.nav_icon;
-            initview("请登录",null,imageUrl);
+            initView("请登录",null,imageUrl);
         }else {
-            MyUser m = BmobUser.getCurrentUser(MyUser.class);
+            MyUser user = BmobUser.getCurrentUser(MyUser.class);
             BmobQuery<MyUser> query = new BmobQuery<MyUser>();
-            query.getObject(m.getObjectId(), new QueryListener<MyUser>() {
+            query.getObject(user.getObjectId(), new QueryListener<MyUser>() {
                 @Override
                 public void done(MyUser myUser, BmobException e) {
                     if (e == null) {
@@ -389,7 +389,7 @@ public class MainActivity extends AppCompatActivity {
                         if (myUser.getImage() == null)
                             imageUrl = "drawable://" + R.drawable.nav_icon;
                         else imageUrl = myUser.getImage().getFileUrl();
-                        initview(myUser.getUsername(), myUser.getPersonal_signature(), imageUrl);
+                        initView(myUser.getUsername(), myUser.getSlogan(), imageUrl);
                     } else {
                         Toast.makeText(MainActivity.this, "无法查询", Toast.LENGTH_SHORT).show();
                         e.printStackTrace();
@@ -407,12 +407,12 @@ public class MainActivity extends AppCompatActivity {
         void onItemClick(View view, int position);
     }
 
-    private void initview(String uname,String ps,String url){
+    private void initView(String name,String slogan,String url){
         View headerView =navView.getHeaderView(0);
-        TextView username= (TextView) headerView.findViewById(R.id.username);
-        username.setText(uname);
-        TextView personal_signature= (TextView) headerView.findViewById(R.id.personal_signature);
-        personal_signature.setText(ps);
+        TextView userName= (TextView) headerView.findViewById(R.id.username);
+        userName.setText(name);
+        TextView sloganText= (TextView) headerView.findViewById(R.id.personal_signature);
+        sloganText.setText(slogan);
         headIcon = (CircleImageView)headerView.findViewById(R.id.icon_image);
         ImageLoader.getInstance().displayImage(url,headIcon);
     }
@@ -431,8 +431,8 @@ public class MainActivity extends AppCompatActivity {
                         mPostList.setTime( list.get(i).getCreatedAt());
                         mPostList.setPublisher(list.get(i).getPublisher());
                         mPostList.setContent(list.get(i).getContent());
-                        mPostList.setBOID(list.get(i).getObjectId());
-                        mPostList.setPid(list.get(i).getPid());
+                        mPostList.setObjectID(list.get(i).getObjectId());
+                        mPostList.setPublisherID(list.get(i).getPublisherID());
                         //获取头像url
                         if (list.get(i).getHead()==null) mPostList.setHead("drawable://" + R.drawable.nav_icon);
                         else mPostList.setHead(list.get(i).getHead());
@@ -447,19 +447,19 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    public void getrank(String s, final boolean isfirst){    //get rank level from cloud database
+    public void getRank(String name, final boolean isFirst){    //get rank level from cloud database
         BmobQuery<MyUser> query = new BmobQuery<MyUser>();
-        query.addWhereEqualTo("username",s);
+        query.addWhereEqualTo("username",name);
         query.findObjects(new FindListener<MyUser>() {
             @Override
             public void done(List<MyUser> list, BmobException e) {
-                if (e==null){;
-                     int a;
-                    a=list.get(0).getRank();
-                    if (isfirst) saveint(a);
+                if (e==null){
+                     int rank;
+                     rank = list.get(0).getRank();
+                    if (isFirst) saveInt(rank);
                     else {
-                        if (a<getint()) saverankcompare(true);
-                        else saverankcompare(false);
+                        if (rank < getInt()) saveRankCompare(true);
+                        else saveRankCompare(false);
                     }
                  //   Toast.makeText(MainActivity.this,"--->"+a,Toast.LENGTH_SHORT).show();
                 }
@@ -493,39 +493,40 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public boolean isMaster(String a,String b){
-        if (a.equals(b)) return true;
-        else return false;
+//        if (a.equals(b)) return true;
+//        else return false;
+        return a.equals(b);
     }
 
-    public void saveint(int rank){   //save rank level
+    public void saveInt(int rank){   //save rank level
         SharedPreferences.Editor editor=getSharedPreferences("data",MODE_PRIVATE).edit();
         editor.putInt("rank",rank);
         editor.apply();
     }
 
-    public int getint(){   //get rank level
+    public int getInt(){   //get rank level
         SharedPreferences pref=getSharedPreferences("data",MODE_PRIVATE);
         return  pref.getInt("rank",0);
     }
 
-    public void savedate(boolean isLogin){      //save login state
+    public void saveData(boolean isLogin){      //save login state
         SharedPreferences.Editor editor=getSharedPreferences("data",MODE_PRIVATE).edit();
         editor.putBoolean("isLogin",isLogin);
         editor.apply();
     }
 
-    public boolean getdata(){     //get login state
+    public boolean getData(){     //get login state
         SharedPreferences pref=getSharedPreferences("data",MODE_PRIVATE);
         return  pref.getBoolean("isLogin",false);
     }
 
-    public void saverankcompare(boolean b){      //save rank compare result
+    public void saveRankCompare(boolean b){      //save rank compare result
         SharedPreferences.Editor editor=getSharedPreferences("data",MODE_PRIVATE).edit();
         editor.putBoolean("result",b);
         editor.apply();
     }
 
-    public boolean getrankcompare(){     //get rank compare result
+    public boolean getRankCompare(){     //get rank compare result
         SharedPreferences pref=getSharedPreferences("data",MODE_PRIVATE);
         return  pref.getBoolean("result",false);
     }

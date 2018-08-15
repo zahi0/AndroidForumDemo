@@ -38,7 +38,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
     public class ViewHolder extends RecyclerView.ViewHolder {
         CardView cardView;
         TextView publisher,time,title,content;
-        CircleImageView head_icon;
+        CircleImageView headIcon;
 
         public ViewHolder(View view) {
             super(view);
@@ -47,7 +47,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
             time=(TextView)view.findViewById(R.id.time);
             title=(TextView)view.findViewById(R.id.title);
             content=(TextView)view.findViewById(R.id.content);
-            head_icon=(CircleImageView)view.findViewById(R.id.head);
+            headIcon=(CircleImageView)view.findViewById(R.id.head);
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -94,7 +94,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
                 .bitmapConfig(Bitmap.Config.RGB_565)
                 .imageScaleType(ImageScaleType.IN_SAMPLE_INT)
                 .build();
-        ImageLoader.getInstance().displayImage(post.getHead(),holder.head_icon,options);
+        ImageLoader.getInstance().displayImage(post.getHead(),holder.headIcon,options);
 /*
         BmobQuery<MyUser> query = new BmobQuery<MyUser>();
         query.addWhereEqualTo("username",post.getPublisher());

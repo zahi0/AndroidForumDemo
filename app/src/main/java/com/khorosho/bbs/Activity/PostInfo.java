@@ -33,14 +33,14 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class PostInfo extends AppCompatActivity {
 
-    CircleImageView reply_head;
-    private List<ReplyList> pdb;
+//    CircleImageView reply_head;
+    private List<ReplyList> replyList;
     ReplyAdapter adapter ;
     RecyclerView recyclerView;
-    TextView reply,replyer,timeinreply,floor;
-    private String objectid;
-    private int y,z;
-    private boolean banreply=true;
+//    TextView reply,replyer,timeinreply,floor;
+    private String objectId;
+    private int floor;
+    private boolean banReply=true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,7 +54,7 @@ public class PostInfo extends AppCompatActivity {
             actionBar.setHomeAsUpIndicator(R.drawable.ic_back);
         }
         Intent intent=getIntent();
-        objectid=intent.getStringExtra("objectid");
+        objectId=intent.getStringExtra("objectId");
         /*
         String title=intent.getStringExtra("title");
         String content=intent.getStringExtra("content");
@@ -78,7 +78,7 @@ public class PostInfo extends AppCompatActivity {
                 .build();
         ImageLoader.getInstance().displayImage(url,headinpost,options);
 */
-        pdb=new ArrayList<>();
+        replyList=new ArrayList<>();
         initReplyList();
         /*
         reply_head=(CircleImageView)findViewById(R.id.reply_head) ;
@@ -91,7 +91,7 @@ public class PostInfo extends AppCompatActivity {
         GridLayoutManager layoutManager=new GridLayoutManager(this,1);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        adapter=new ReplyAdapter(pdb);
+        adapter=new ReplyAdapter(replyList);
         recyclerView.setAdapter(adapter);
         final SwipeRefreshLayout swipeRefresh=(SwipeRefreshLayout)findViewById(R.id.swip_refresh2) ;
         swipeRefresh.setColorSchemeResources(R.color.colorPrimary);
@@ -137,32 +137,32 @@ public class PostInfo extends AppCompatActivity {
     }
 
     public void initReplyList(){
-        pdb.clear();
+        replyList.clear();
         BmobQuery<ReplyList> query = new BmobQuery<ReplyList>();
-        query.addWhereEqualTo("belongto",objectid);
+        query.addWhereEqualTo("belongto",objectId);
         query.setLimit(50);
         query.findObjects(new FindListener<ReplyList>() {
             @Override
             public void done(List<ReplyList> list, BmobException e) {
                 if (e==null){
-                    y=list.size();
+                    floor=list.size();
                   //  z=y+2;
-                    for (int i=0;i<y;i++){
-                        ReplyList replyList =new ReplyList();
-                        replyList.setTitle(list.get(i).getTitle());
-                        replyList.setFloor(list.get(i).getFloor());
-                        replyList.setTimeinreply( list.get(i).getCreatedAt());
-                        replyList.setReplyer(list.get(i).getReplyer());
-                        replyList.setReply(list.get(i).getReply());
-                        if (list.get(i).getHead()==null) replyList.setHead("drawable://" + R.drawable.nav_icon);
-                        else replyList.setHead(list.get(i).getHead());
-                        pdb.add(replyList);
+                    for (int i=0;i < floor;i++){
+                        ReplyList rList =new ReplyList();
+                        rList.setTitle(list.get(i).getTitle());
+                        rList.setFloor(list.get(i).getFloor());
+                        rList.setTimeInReply( list.get(i).getCreatedAt());
+                        rList.setReplyer(list.get(i).getReplyer());
+                        rList.setReply(list.get(i).getReply());
+                        if (list.get(i).getHead()==null) rList.setHead("drawable://" + R.drawable.nav_icon);
+                        else rList.setHead(list.get(i).getHead());
+                        replyList.add(rList);
                     }
                     adapter.notifyDataSetChanged();
                 }else {
                     e.printStackTrace();
                     Toast.makeText(PostInfo.this,"初始化失败",Toast.LENGTH_SHORT).show();
-                    banreply=false;
+                    banReply=false;
                 }
             }
         });
@@ -170,22 +170,22 @@ public class PostInfo extends AppCompatActivity {
 
     public void send(View v){
         EditText inputText=(EditText)findViewById(R.id.replytext);
-        String s=inputText.getText().toString();
-        ReplyList pDB=new ReplyList();
+        String reply=inputText.getText().toString();
+        ReplyList rList=new ReplyList();
         MyUser user= BmobUser.getCurrentUser(MyUser.class);
-        pDB.setReply(s);
-        pDB.setReplyer(user.getUsername());
-        pDB.setBelongto(objectid);
-        pDB.setFloor((++y)+"楼");
-        pDB.setTimeinreply("刚刚");
+        rList.setReply(reply);
+        rList.setReplyer(user.getUsername());
+        rList.setBelongTo(objectId);
+        rList.setFloor((++floor)+"楼");
+        rList.setTimeInReply("刚刚");
         String url;
         if (user.getImage()==null) url="drawable://" + R.drawable.nav_icon;
         else url=user.getImage().getFileUrl();
-        pDB.setHead(url);
-        pDB.save(new SaveListener<String>() {
+        rList.setHead(url);
+        rList.save(new SaveListener<String>() {
             @Override
             public void done(String s, BmobException e) {
-                if ((e==null)&&banreply) {Toast.makeText(PostInfo.this,"发表成功",Toast.LENGTH_SHORT).show();
+                if ((e==null)&&banReply) {Toast.makeText(PostInfo.this,"发表成功",Toast.LENGTH_SHORT).show();
                // y++;
                 }
                 else {
@@ -195,7 +195,7 @@ public class PostInfo extends AppCompatActivity {
             }
         });
         inputText.setText(null);
-        pdb.add(pDB);
+        replyList.add(rList);
         adapter.notifyDataSetChanged();
     }
 }

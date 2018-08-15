@@ -60,7 +60,7 @@ public class PostEdit extends AppCompatActivity {
         postList.setTitle(title.getText().toString());
         postList.setContent(content.getText().toString());
         postList.setPublisher(myUser.getUsername());
-        postList.setPid(myUser.getObjectId());
+        postList.setPublisherID(myUser.getObjectId());
         final String url;
         if (myUser.getImage()==null) url="drawable://" + R.drawable.nav_icon;
         else url=myUser.getImage().getFileUrl();
@@ -74,7 +74,7 @@ public class PostEdit extends AppCompatActivity {
                     replyList.setReply(content.getText().toString());
                     replyList.setReplyer(myUser.getUsername());
                     replyList.setFloor("楼主");
-                    replyList.setBelongto(s);
+                    replyList.setBelongTo(s);
                     replyList.setHead(url);
                     replyList.save(new SaveListener<String>() {
                         @Override

@@ -5,7 +5,7 @@ import cn.bmob.v3.datatype.BmobFile;
 
 public class ReplyList extends BmobObject {
     //回复内容，回复者，所属贴子ID,时间，楼层，标题（只在一楼显示），头像
-    private  String reply;//,replyer,belongto,timeinreply,floor,title,head;
+    private  String reply;
     private  String replyer;
     private  String belongTo;
     private  String timeInReply;
